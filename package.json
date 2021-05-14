@@ -21,7 +21,9 @@
     "routing-controllers": "^0.9.0",
     "routing-controllers-openapi": "^3.0.0",
     "swagger-ui-express": "^4.1.6",
-    "typeorm": "0.2.31"
+    "typeorm": "0.2.31",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.4"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
