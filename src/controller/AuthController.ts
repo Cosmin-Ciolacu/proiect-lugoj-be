@@ -1,9 +1,9 @@
 import { JsonController, Post, Body, ContentType } from "routing-controllers";
 import { hash, compare } from "bcrypt";
 import { sign } from "jsonwebtoken";
-import { LoginBody } from "../../requestBody/LoginBody";
+import { LoginBody } from "../requestBody/LoginBody";
 import { User } from "../entities";
-import { RegisterBody } from "../../requestBody/RegisterBody";
+import { RegisterBody } from "../requestBody/RegisterBody";
 
 @JsonController("/auth")
 export class AuthController {
