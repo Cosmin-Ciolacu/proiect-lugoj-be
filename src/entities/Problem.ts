@@ -30,6 +30,7 @@ export class Problem extends BaseEntity {
   ): Promise<Problem[]> {
     return await this.createQueryBuilder("problem")
       .leftJoinAndSelect("problem.user", "user")
+      .orderBy("problem.updatedAt", "DESC")
       .offset(skip)
       .limit(take)
       .getMany();

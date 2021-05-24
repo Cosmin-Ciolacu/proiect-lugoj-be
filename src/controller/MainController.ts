@@ -7,8 +7,9 @@ import {
   CurrentUser,
   QueryParam,
 } from "routing-controllers";
-import { Problem, User } from "../entities";
+import { Problem, User, Vote } from "../entities";
 import { ProblemBody } from "../requestBody/ProblemBody";
+import { VoteBody } from "../requestBody/VoteBody";
 
 @JsonController("/main")
 export class MainController {
@@ -52,6 +53,34 @@ export class MainController {
     return {
       success: 1,
       problems,
+    };
+  }
+  @Post("/vote")
+  @Authorized()
+  public async vote(
+    @CurrentUser() user: User,
+    @Body() voteBody: VoteBody
+  ): Promise<any> {
+    const isVoted = await Vote.findOne({
+      where: {
+        userId: user.id,
+        problemId: voteBody.problemId,
+      },
+    });
+    if (isVoted) {
+      return {
+        success: 1,
+        voted: 1,
+      };
+    }
+    const vote = new Vote();
+    if (!!user.id) vote.userId = user.id;
+    if (!!voteBody.problemId) vote.problemId = voteBody.problemId;
+    if (!!voteBody.vote) vote.vote = voteBody.vote;
+    await vote.save();
+    return {
+      success: 1,
+      saved: 1,
     };
   }
 }
