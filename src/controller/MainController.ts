@@ -6,6 +6,7 @@ import {
   Authorized,
   CurrentUser,
   QueryParam,
+  Param,
 } from "routing-controllers";
 import { Problem, User, Vote } from "../entities";
 import { ProblemBody } from "../requestBody/ProblemBody";
@@ -81,6 +82,19 @@ export class MainController {
     return {
       success: 1,
       saved: 1,
+    };
+  }
+
+  @Get("/is-voted/:problemId")
+  @Authorized()
+  public async isVoded(
+    @CurrentUser() user: User,
+    @Param("problemId") problemId: number
+  ): Promise<any> {
+    const isProblemVoted = await Vote.isProblemVoted(user.id, problemId);
+    return {
+      success: 1,
+      isProblemVoted,
     };
   }
 }
