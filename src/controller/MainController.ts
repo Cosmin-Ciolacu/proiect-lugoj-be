@@ -7,6 +7,7 @@ import {
   CurrentUser,
   QueryParam,
   Param,
+  Put,
 } from "routing-controllers";
 import { Problem, User, Vote } from "../entities";
 import { ProblemBody } from "../requestBody/ProblemBody";
@@ -79,9 +80,31 @@ export class MainController {
     if (!!voteBody.problemId) vote.problemId = voteBody.problemId;
     if (!!voteBody.vote) vote.vote = voteBody.vote;
     await vote.save();
+    const positiveVotes = await Vote.getPositiveVotes(voteBody.problemId);
+    const negativeVotes = await Vote.getNegativeVotes(voteBody.problemId);
+    const isResolved =
+      Math.floor(positiveVotes / negativeVotes) > 2 ? true : false;
+    if (isResolved) {
+      const problem = await Problem.findOne(voteBody.problemId);
+      problem.isResolved = true;
+      await problem.save();
+      //send mail
+    }
     return {
       success: 1,
       saved: 1,
+      isResolved,
+    };
+  }
+
+  @Get("/locations")
+  @Authorized()
+  public async getLocations() {
+    const locations = await Problem.getLocations();
+    console.log(locations);
+    return {
+      success: 1,
+      locations,
     };
   }
 
@@ -92,9 +115,29 @@ export class MainController {
     @Param("problemId") problemId: number
   ): Promise<any> {
     const isProblemVoted = await Vote.isProblemVoted(user.id, problemId);
+    const positiveVotes = await Vote.getPositiveVotes(problemId);
+    const negativeVotes = await Vote.getNegativeVotes(problemId);
     return {
       success: 1,
       isProblemVoted,
+      positiveVotes,
+      negativeVotes,
+    };
+  }
+
+  @Put("/update-status/:problemId/:status")
+  @Authorized()
+  public async markResolved(
+    @Param("problemId") problemId: number,
+    @Param("status") status: string
+  ): Promise<any> {
+    const problem = await Problem.findOne(problemId);
+    //problem.isResolved = true;
+    problem.status = status;
+    await problem.save();
+    return {
+      success: 1,
+      updated: 1,
     };
   }
 }

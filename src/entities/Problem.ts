@@ -19,6 +19,8 @@ export class Problem extends BaseEntity {
   @Column({ name: "observations", type: "text", nullable: true })
   observations: string;
   @Column({ name: "is_confirmed", default: false }) isConfirmed: boolean;
+  @Column({ nullable: true }) status: string;
+  @Column({ name: "is_resolved", default: false }) isResolved: boolean;
   @CreateDateColumn({ name: "created_at" }) createdAt: Date;
   @UpdateDateColumn({ name: "updated_at" }) updatedAt: Date;
   @ManyToOne(() => User, (user) => user.problems)
@@ -33,6 +35,12 @@ export class Problem extends BaseEntity {
       .orderBy("problem.updatedAt", "DESC")
       .offset(skip)
       .limit(take)
+      .getMany();
+  }
+
+  static async getLocations(): Promise<Problem[]> {
+    return await this.createQueryBuilder("problem")
+      .select(["problem.lat", "problem.lng", "problem.category"])
       .getMany();
   }
 }

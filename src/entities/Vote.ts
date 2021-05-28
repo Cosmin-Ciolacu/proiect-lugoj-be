@@ -26,4 +26,17 @@ export class Vote extends BaseEntity {
       .getOne();
     return isVoted ? true : false;
   }
+  static async getPositiveVotes(problemId: number): Promise<number> {
+    return await this.createQueryBuilder("vote")
+      .where("vote.problemId = :problemId", { problemId })
+      .andWhere("vote.vote = :vote", { vote: "Y" })
+      .getCount();
+  }
+
+  static async getNegativeVotes(problemId: number): Promise<number> {
+    return await this.createQueryBuilder("vote")
+      .where("vote.problemId = :problemId", { problemId })
+      .andWhere("vote.vote = :vote", { vote: "N" })
+      .getCount();
+  }
 }
