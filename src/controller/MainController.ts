@@ -41,11 +41,21 @@ export class MainController {
   @Get("/problems")
   @Authorized()
   public async getProblems(
+    @CurrentUser() user: User,
     @QueryParam("skip") skip?: number,
-    @QueryParam("take") take?: number
+    @QueryParam("take") take?: number,
+    @QueryParam("userProblems") userProblems?: boolean,
+    @QueryParam("status") status?: string
   ): Promise<any> {
     if (skip === undefined && take === undefined) {
       const problems = await Problem.getProblems();
+      return {
+        success: 1,
+        problems,
+      };
+    }
+    if (userProblems) {
+      const problems = await Problem.getProblems(skip, take, user.id, status);
       return {
         success: 1,
         problems,

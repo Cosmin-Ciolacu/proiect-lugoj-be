@@ -19,7 +19,7 @@ export class Problem extends BaseEntity {
   @Column({ name: "observations", type: "text", nullable: true })
   observations: string;
   @Column({ name: "is_confirmed", default: false }) isConfirmed: boolean;
-  @Column({ nullable: true }) status: string;
+  @Column({ default: "VERIFYING" }) status: string;
   @Column({ name: "is_resolved", default: false }) isResolved: boolean;
   @CreateDateColumn({ name: "created_at" }) createdAt: Date;
   @UpdateDateColumn({ name: "updated_at" }) updatedAt: Date;
@@ -28,8 +28,20 @@ export class Problem extends BaseEntity {
 
   static async getProblems(
     skip: number = 0,
-    take: number = 3
+    take: number = 3,
+    userId: number = null,
+    status: string = ""
   ): Promise<Problem[]> {
+    if (userId) {
+      return await this.createQueryBuilder("problem")
+        .where("problem.userId = :userId", { userId })
+        .andWhere("problem.status = :status", { status })
+        .leftJoinAndSelect("problem.user", "user")
+        .orderBy("problem.updatedAt", "DESC")
+        .offset(skip)
+        .limit(take)
+        .getMany();
+    }
     return await this.createQueryBuilder("problem")
       .leftJoinAndSelect("problem.user", "user")
       .orderBy("problem.updatedAt", "DESC")
@@ -40,7 +52,8 @@ export class Problem extends BaseEntity {
 
   static async getLocations(): Promise<Problem[]> {
     return await this.createQueryBuilder("problem")
-      .select(["problem.lat", "problem.lng", "problem.category"])
+      //.select(["problem.lat", "problem.lng", "problem.category"])
+      .leftJoinAndSelect("problem.user", "user")
       .getMany();
   }
 }
