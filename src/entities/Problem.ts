@@ -29,6 +29,7 @@ export class Problem extends BaseEntity {
   static async getProblems(
     skip: number = 0,
     take: number = 3,
+    category: string = null,
     userId: number = null,
     status: string = ""
   ): Promise<Problem[]> {
@@ -36,6 +37,16 @@ export class Problem extends BaseEntity {
       return await this.createQueryBuilder("problem")
         .where("problem.userId = :userId", { userId })
         .andWhere("problem.status = :status", { status })
+        .leftJoinAndSelect("problem.user", "user")
+        .orderBy("problem.updatedAt", "DESC")
+        .offset(skip)
+        .limit(take)
+        .getMany();
+    }
+    if (category !== null) {
+      console.log("filter by category");
+      return await this.createQueryBuilder("problem")
+        .where("problem.category = :category", { category })
         .leftJoinAndSelect("problem.user", "user")
         .orderBy("problem.updatedAt", "DESC")
         .offset(skip)

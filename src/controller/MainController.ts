@@ -45,8 +45,10 @@ export class MainController {
     @QueryParam("skip") skip?: number,
     @QueryParam("take") take?: number,
     @QueryParam("userProblems") userProblems?: boolean,
-    @QueryParam("status") status?: string
+    @QueryParam("status") status?: string,
+    @QueryParam("category") category?: string
   ): Promise<any> {
+    console.log(category);
     if (skip === undefined && take === undefined) {
       const problems = await Problem.getProblems();
       return {
@@ -55,7 +57,21 @@ export class MainController {
       };
     }
     if (userProblems) {
-      const problems = await Problem.getProblems(skip, take, user.id, status);
+      const problems = await Problem.getProblems(
+        skip,
+        take,
+        null,
+        user.id,
+        status
+      );
+      return {
+        success: 1,
+        problems,
+      };
+    }
+    if (category) {
+      const problems = await Problem.getProblems(skip, take, category);
+      console.log(problems);
       return {
         success: 1,
         problems,
