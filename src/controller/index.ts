@@ -1,3 +1,4 @@
-import {MainController} from "./MainController";
+import { MainController } from "./MainController";
+import { ChartController } from "./ChartController";
 
-export const definedControllers = [MainController]
+export const definedControllers = [MainController, ChartController];
