@@ -6,6 +6,7 @@ import {
   Entity,
   BaseEntity,
   ManyToOne,
+  JoinColumn,
 } from "typeorm";
 import { User } from "./User";
 @Entity()
@@ -23,7 +24,8 @@ export class Problem extends BaseEntity {
   @Column({ name: "is_resolved", default: false }) isResolved: boolean;
   @CreateDateColumn({ name: "created_at" }) createdAt: Date;
   @UpdateDateColumn({ name: "updated_at" }) updatedAt: Date;
-  @ManyToOne(() => User, (user) => user.problems)
+  @ManyToOne(() => User, (user) => user.problems, { eager: true })
+  @JoinColumn()
   user: User;
   /* static async count(): Promise<number> {
     return this.count();

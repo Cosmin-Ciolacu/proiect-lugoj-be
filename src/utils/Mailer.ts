@@ -6,8 +6,7 @@ export class Mailer {
   private transporter: Transporter;
   constructor() {
     this.transporter = mailer.createTransport({
-      host: "mail.privateemail.com",
-      port: 465,
+      service: "gmail",
       auth: {
         user: process.env.GMAIL_EMAIL,
         pass: process.env.GMAIL_PASS,

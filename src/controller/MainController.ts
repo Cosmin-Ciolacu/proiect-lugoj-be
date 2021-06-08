@@ -12,6 +12,7 @@ import {
 import { Problem, User, Vote } from "../entities";
 import { ProblemBody } from "../requestBody/ProblemBody";
 import { VoteBody } from "../requestBody/VoteBody";
+import { Mailer } from "../utils/Mailer";
 
 @JsonController("/main")
 export class MainController {
@@ -159,8 +160,19 @@ export class MainController {
   ): Promise<any> {
     const problem = await Problem.findOne(problemId);
     //problem.isResolved = true;
+    console.log(problem);
     problem.status = status;
+    //const reporter = await User.findOne(problem.user.id);
+    const email = problem.user.email;
     await problem.save();
+
+    //const email = problem.user.email;
+    const mailer = new Mailer();
+    const data = await mailer.sendMail(
+      email,
+      "schimbare status",
+      `Sesizarea cu id-ul ${problemId} are statusul ${status}`
+    );
     return {
       success: 1,
       updated: 1,

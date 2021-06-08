@@ -15,6 +15,7 @@ export class AuthController {
       response = {
         success: true,
         userExists: false,
+        invalidData: true,
       };
       return response;
     }
@@ -33,6 +34,7 @@ export class AuthController {
         userExists: true,
         username: user.username,
         accountType: user.accountType,
+        email: user.email,
       };
       return response;
     }
