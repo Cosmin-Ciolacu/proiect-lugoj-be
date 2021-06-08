@@ -22,6 +22,7 @@ export class MainController {
     @Body() problemBody: ProblemBody,
     @CurrentUser() user: User
   ): Promise<any> {
+    console.log(problemBody.category);
     const problem = new Problem();
     if (!!user) problem.user = user;
     if (!!problemBody.category) problem.category = problemBody.category;
