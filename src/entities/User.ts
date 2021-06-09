@@ -15,7 +15,7 @@ export class User extends BaseEntity {
   @Column() username: string;
   @Column() email: string;
   @Column() password: string;
-  @Column({ name: "account_type" }) accountType: string;
+  @Column({ name: "account_type", nullable: true }) accountType: string;
   @CreateDateColumn({ name: "created_at" }) createdAt: Date;
   @UpdateDateColumn({ name: "updated_at" }) updatedAt: Date;
   @OneToMany(() => Problem, (problem) => problem.user)
